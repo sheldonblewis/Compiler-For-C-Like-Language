@@ -193,12 +193,12 @@ int main() {
     // Assign offsets: params first (positive), locals next (negative)
     int paramCount = 2; // wain always has two parameters
 
-    int paramOffset = 0;
+    int paramOffset = 4 * (decls.size() - 1);  // Start from top
     for (int i = 0; i < paramCount; ++i) {
         ASTNode* d = decls[i];
         string name = d->find("ID")->kids.front()->label;
         symbols[name] = { d->find("ID")->kids.front()->type, paramOffset };
-        paramOffset += 4;
+        paramOffset -= 4;
     }
 
     int numLocals = decls.size() - paramCount;
@@ -212,8 +212,8 @@ int main() {
 
     cout << ".import print\n";
     cout << "lis $4\n.word 4\n";
-    cout << "sw $2, -4($30)\nsub $30, $30, $4\n";  // push b
-    cout << "sw $1, -4($30)\nsub $30, $30, $4\n";  // push a
+    cout << "sw $1, -4($30)\nsub $30, $30, $4\n";  // push b
+    cout << "sw $2, -4($30)\nsub $30, $30, $4\n";  // push a
 
     generate(mainFn->find("dcls"));               // push locals
 
